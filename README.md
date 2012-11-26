@@ -19,4 +19,6 @@ let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 
 ##Screenshot
 
+Searching require-paths with a word, 'core_ext'.
+
 ![search require paths with 'core_ext'](https://raw.github.com/rhysd/unite-ruby-require.vim/master/screen.jpg)
