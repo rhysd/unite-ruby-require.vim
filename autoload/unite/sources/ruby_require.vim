@@ -7,6 +7,7 @@ let g:unite_source_ruby_require_ruby_command = get(g:, 'unite_source_ruby_requir
 let s:source = {
             \ "name" : "ruby/require",
             \ "description" : "Ruby library to require",
+            \ "default_action" : {"common" : "require"},
             \ "action_table" : {},
             \ }
 
@@ -33,6 +34,10 @@ endfunction
 let s:source.action_table.require = {
             \ 'description' : 'require ruby gems'
             \ }
+
+function! s:source.action_table.require.func(candidate)
+    execute 'put!' '=''require '''''.a:candidate.word.''''''''
+endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
