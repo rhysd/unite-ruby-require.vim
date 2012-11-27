@@ -18,7 +18,7 @@ endfunction
 function! s:source.gather_candidates(args, context)
     let require_list = split(
           \ system(g:unite_source_ruby_require_ruby_command .
-          \ ' -e ''puts Gem::default_path.map{|p| Dir.glob(p+"/**/*.rb").to_a.map{|g| g=~/#{p}\/.+\/lib\/(.+).rb$/; $1 }}.flatten!.compact!.sort!''')
+          \ ' -e ''puts Gem::default_path.map{|p| Dir.glob(p+"/**/*.rb").map{|g| g=~/#{p}\/.+\/lib\/(.+).rb$/; $1 }}.flatten!.compact!.sort!.uniq!''')
           \ , "\n")
 
     if v:shell_error
