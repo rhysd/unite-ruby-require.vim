@@ -1,5 +1,8 @@
 # Search Ruby gems to require with unite.vim
 
+This Vim plugin is a [unite.vim](https://github.com/Shougo/unite.vim) source for searching paths to require in Ruby.
+This plugin searches gem's default paths and bundler's local paths.
+
 ##Usage
 
 ```
