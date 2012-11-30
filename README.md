@@ -22,7 +22,7 @@ let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 
 ##Screenshot
 
-Searching require-paths with a word, `core_ext`.
-After choosing `active_support/core_ext`, typing `<CR>` appends `require 'active_support/core_ext'` to a line under the cursor.
+Searching require-paths with a word, `uri`.
+After choosing `open-uri`, typing `<CR>` appends `require 'open-uri'` to a line under the cursor.
 
 ![search require paths with 'core_ext'](https://raw.github.com/rhysd/unite-ruby-require.vim/master/screen.jpg)
