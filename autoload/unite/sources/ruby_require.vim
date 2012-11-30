@@ -20,10 +20,17 @@ function! s:source.gather_candidates(args, context)
           \ system(g:unite_source_ruby_require_ruby_command .
           \ ' -e '.
           \ '''begin; require "bundler"; b=[Bundler::bundle_path.to_s]; rescue; b=[]; end;'.
-          \ 'puts (b+Gem::default_path).map{|p| Dir.glob(p+"/**/*.rb").map{|g| g=~/#{p}\/.+\/lib\/(.+).rb$/; $1 }}.flatten!.compact!.sort!.uniq!''')
+          \ 'puts $LOAD_PATH.select{|l| l=~/ruby\/\d\.\d\.\d$/ }.map{|l| Dir.glob(l+"/**/*").map{|p| p=~/#{l}\/(.+)\.rb$/; $1}}.flatten!.compact!.sort!'.
+          \ ' + (b+Gem::default_path).map{|p| Dir.glob(p+"/**/*.rb").map{|g| g=~/#{p}\/.+\/lib\/(.+)\.rb$/; $1 }}.flatten!.compact!.sort!.uniq!'.
+          \ '''')
           \ , "\n")
 
     if v:shell_error
+        echohl Error
+        for error in require_list
+            echohl error
+        endfor
+        echohl None
         return []
     endif
 
