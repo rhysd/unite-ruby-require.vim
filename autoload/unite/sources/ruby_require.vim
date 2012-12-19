@@ -17,7 +17,7 @@ endfunction
 
 function! s:source.gather_candidates(args, context)
     let require_list = split(
-          \ system(g:unite_source_ruby_require_ruby_command .
+          \ unite#util#system(g:unite_source_ruby_require_ruby_command .
           \ ' -e '.
           \ '''begin; require "bundler"; b=[Bundler::bundle_path.to_s]; rescue; b=[]; end;'.
           \ 'puts $LOAD_PATH.select{|l| l=~/ruby\/\d\.\d\.\d$/ }.map{|l| Dir.glob(l+"/**/*").map{|p| p=~/#{l}\/(.+)\.rb$/; $1}}.flatten!.compact!.sort!'.
