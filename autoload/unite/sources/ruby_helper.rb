@@ -1,3 +1,4 @@
+sleep 1
 stdlibs = $LOAD_PATH.grep(/ruby\/\d\.\d\.\d$/).
   map {|l|
     r = /^#{l}\/(.+)\.rb$/
