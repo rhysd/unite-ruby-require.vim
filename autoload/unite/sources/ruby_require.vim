@@ -12,6 +12,7 @@ let s:source = {
 
 let s:helper_path = printf('%s/ruby_helper.rb', expand('<sfile>:p:h'))
 let s:P = vital#of('unite-ruby-require.vim').import('ProcessManager')
+let s:ramcache = []
 
 function! unite#sources#ruby_require#define()
   let ok = g:unite_source_ruby_require_cmd !=# '' && s:P.is_available()
@@ -19,16 +20,23 @@ function! unite#sources#ruby_require#define()
 endfunction
 
 function! s:source.async_gather_candidates(args, context)
+  "if !a:context.is_redraw && !empty(s:ramcache)
+  "  return s:ramcache
+  "endif
   let cmd = printf('%s %s', g:unite_source_ruby_require_cmd, s:helper_path)
   call s:P.touch('unite-ruby-require', cmd)
-  let [out, err, type] = s:P.read('unite-ruby-require', [''])
+  let [out, err, type] = s:P.read('unite-ruby-require', ['$'])
   call unite#util#print_error(err)
   if type ==# 'timedout'
-    return s:_format(out)
+    let formatted = s:_format(out)
+    let s:ramcache += formatted
+    return formatted
   else " matched
     let a:context.is_async = 0
     call s:P.stop('unite-ruby-require')
-    return s:_format(out)
+    let formatted = s:_format(out)
+    let s:ramcache += formatted
+    return formatted
   endif
 endfunction
 
