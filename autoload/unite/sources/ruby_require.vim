@@ -21,7 +21,7 @@ function! s:source.gather_candidates(args, context)
   let require_list = split(unite#util#system(cmd), "\n")
 
   return map(require_list, "{
-        \ 'word': printf(\"require '%s'\", v:val),
+        \ 'word': printf(\"require %s\", string(v:val)),
         \ 'abbr': v:val,
         \ }")
 endfunction
