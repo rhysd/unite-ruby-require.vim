@@ -5,9 +5,9 @@ let g:unite_source_ruby_require_cmd =
       \ get(g:, 'unite_source_ruby_require_cmd', 'ruby')
 
 let s:source = {
-      \ "name": "ruby/require",
-      \ "description": "Ruby library to require",
-      \ "default_action": {"common": "insert"},
+      \ 'name': 'ruby/require',
+      \ 'description': 'Ruby library to require',
+      \ 'default_action': {'common': 'insert'},
       \ }
 
 let s:helper_path = printf('%s/ruby_helper.rb', expand('<sfile>:p:h'))
