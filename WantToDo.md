@@ -1,1 +1,2 @@
-# add relative paths like `require './hoge'`
+* add relative paths like `require './hoge'`
+* doc
