@@ -8,7 +8,6 @@ let s:source = {
       \ "name": "ruby/require",
       \ "description": "Ruby library to require",
       \ "default_action": {"common": "insert"},
-      \ "action_table": {},
       \ }
 
 let s:helper_path = printf('%s/ruby_helper.rb', expand('<sfile>:p:h'))
