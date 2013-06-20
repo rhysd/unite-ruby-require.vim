@@ -20,10 +20,10 @@ function! s:source.gather_candidates(args, context)
   let cmd = printf('%s %s', g:unite_source_ruby_require_cmd, s:helper_path)
   let require_list = split(unite#util#system(cmd), "\n")
 
-  return map(require_list, "{
-        \ 'word': printf(\"require %s\", string(v:val)),
-        \ 'abbr': v:val,
-        \ }")
+  return map(require_list, '{
+        \ "word": printf("require %s", string(v:val)),
+        \ "abbr": v:val,
+        \ }')
 endfunction
 
 let &cpo = s:save_cpo
