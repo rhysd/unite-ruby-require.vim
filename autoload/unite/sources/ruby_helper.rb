@@ -12,5 +12,5 @@ gemlibs = (bundler_paths + Gem.default_path).
     Dir.glob("#{p}/**/lib/**/*.rb").map {|g| g[r, 1] }
   }.
   flatten.compact.sort.uniq
-#puts stdlibs + gemlibs
-p [stdlibs.size, gemlibs.size]
+puts stdlibs + gemlibs
+#p [stdlibs.size, gemlibs.size]
