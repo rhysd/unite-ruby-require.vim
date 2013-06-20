@@ -16,27 +16,17 @@ function! unite#sources#ruby_require#define()
 endfunction
 
 function! s:source.gather_candidates(args, context)
-  let require_list = split(
-        \ unite#util#system(g:unite_source_ruby_require_ruby_command .
+  let x = (g:unite_source_ruby_require_ruby_command .
         \ ' -e '.
         \ '''begin; require "bundler"; b=[Bundler::bundle_path.to_s]; rescue; b=[]; end;'.
         \ 'puts $LOAD_PATH.select{|l| l=~/ruby\/\d\.\d\.\d$/ }.map{|l| Dir.glob(l+"/**/*").map{|p| p=~/#{l}\/(.+)\.rb$/; $1}}.flatten!.compact!.sort!'.
         \ ' + (b+Gem::default_path).map{|p| Dir.glob(p+"/**/*.rb").map{|g| g=~/#{p}\/.+\/lib\/(.+)\.rb$/; $1 }}.flatten!.compact!.sort!.uniq!'.
         \ '''')
-        \ , "\n")
-
-  if v:shell_error
-    echohl Error
-    for error in require_list
-      echohl error
-    endfor
-    echohl None
-    return []
-  endif
+  let require_list = split(unite#util#system(x), "\n")
 
   return map(require_list, "{
-        \ 'word' : v:val,
-        \ 'is_multiline' : 1,
+        \ 'word': v:val,
+        \ 'is_multiline': 1,
         \ }")
 endfunction
 
@@ -45,7 +35,7 @@ let s:source.action_table.require = {
       \ }
 
 function! s:source.action_table.require.func(candidate)
-  execute 'put!' '=''require ''''' . a:candidate.word . ''''''''
+  execute 'put!' '=' 'require ''''' . a:candidate.word . ''''''''
 endfunction
 
 let &cpo = s:save_cpo
