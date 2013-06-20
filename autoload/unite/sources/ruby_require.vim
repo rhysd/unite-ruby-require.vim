@@ -24,7 +24,6 @@ function! s:source.gather_candidates(args, context)
   return map(require_list, "{
         \ 'word': printf(\"require '%s'\", v:val),
         \ 'abbr': v:val,
-        \ 'is_multiline': 1,
         \ }")
 endfunction
 
