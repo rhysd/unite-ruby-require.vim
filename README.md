@@ -23,7 +23,7 @@ TBD
 ## Setting
 
 (OPTIONAL) You can set ruby command to use for searching gems to
-`g:unite_source_ruby_require_ruby_command`. By default unite-ruby-require will
+`g:unite_source_ruby_require_cmd`. By default unite-ruby-require will
 look up from `$PATH`.
 
 Example:
