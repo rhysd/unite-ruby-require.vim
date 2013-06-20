@@ -7,7 +7,7 @@ let g:unite_source_ruby_require_cmd =
 let s:source = {
       \ "name": "ruby/require",
       \ "description": "Ruby library to require",
-      \ "default_action": {"common": "require"},
+      \ "default_action": {"common": "insert"},
       \ "action_table": {},
       \ }
 
@@ -22,17 +22,10 @@ function! s:source.gather_candidates(args, context)
   let require_list = split(unite#util#system(cmd), "\n")
 
   return map(require_list, "{
-        \ 'word': v:val,
+        \ 'word': printf(\"require '%s'\", v:val),
+        \ 'abbr': v:val,
         \ 'is_multiline': 1,
         \ }")
-endfunction
-
-let s:source.action_table.require = {
-      \ 'description': 'require ruby gems'
-      \ }
-
-function! s:source.action_table.require.func(candidate)
-  execute 'put!' '=' 'require ''''' . a:candidate.word . ''''''''
 endfunction
 
 let &cpo = s:save_cpo
