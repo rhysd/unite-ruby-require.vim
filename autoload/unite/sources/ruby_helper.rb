@@ -5,6 +5,7 @@ stdlibs = $LOAD_PATH.grep(/ruby\/\d\.\d\.\d$/).
   }.
   flatten.sort
 #bundler_paths = [(require 'bundler'; Bundler.bundle_path.to_s)] rescue []
+puts stdlibs
 bundler_paths = []
 gemlibs = (bundler_paths + Gem.default_path).
   compact.flatten.
@@ -13,5 +14,5 @@ gemlibs = (bundler_paths + Gem.default_path).
     Dir.glob("#{p}/**/lib/**/*.rb").map {|g| g[r, 1] }.compact
   }.
   flatten.sort.uniq
-#puts stdlibs + gemlibs
-p [stdlibs.size, gemlibs.size]
+puts gemlibs
+#p [stdlibs.size, gemlibs.size]
