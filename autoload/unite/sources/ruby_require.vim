@@ -10,8 +10,14 @@ let s:source = {
       \ 'default_action': {'common': 'insert'},
       \ }
 
-let s:helper_path = printf('%s/ruby_helper.rb', expand('<sfile>:p:h'))
-let s:P = vital#of('unite-ruby-require.vim').import('ProcessManager')
+let s:V = vital#of('unite-ruby-require.vim')
+let s:P = s:V.import('ProcessManager')
+let s:F = s:V.import('System.Filepath')
+
+let s:helper_path = printf(
+      \ '%s%sruby_helper.rb',
+      \ expand('<sfile>:p:h'),
+      \ s:F.separator())
 let s:ramcache = []
 
 function! unite#sources#ruby_require#define()
