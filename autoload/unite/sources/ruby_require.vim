@@ -28,7 +28,7 @@ function! s:source.gather_candidates(args, context)
 endfunction
 
 let s:source.action_table.require = {
-      \ 'description' : 'require ruby gems'
+      \ 'description': 'require ruby gems'
       \ }
 
 function! s:source.action_table.require.func(candidate)
