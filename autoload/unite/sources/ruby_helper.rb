@@ -1,4 +1,3 @@
-sleep 1
 stdlibs = $LOAD_PATH.grep(/ruby\/\d\.\d\.\d$/).
   map {|l|
     r = /^#{l}\/(.+)\.rb$/
@@ -7,7 +6,6 @@ stdlibs = $LOAD_PATH.grep(/ruby\/\d\.\d\.\d$/).
   flatten.sort
 #bundler_paths = [(require 'bundler'; Bundler.bundle_path.to_s)] rescue []
 puts stdlibs
-sleep 2
 bundler_paths = []
 gemlibs = (bundler_paths + Gem.default_path).
   compact.flatten.
