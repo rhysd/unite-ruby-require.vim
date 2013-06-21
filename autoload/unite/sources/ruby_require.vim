@@ -25,10 +25,19 @@ function! unite#sources#ruby_require#define()
   return ok ? s:source : {}
 endfunction
 
+function! s:source.gather_candidates(args, context)
+  if a:context.is_async && !empty(s:ramcache)
+    let a:context.is_async = 0
+    return s:ramcache
+  elseif a:context.is_redraw
+    let s:ramcache = []
+    echomsg string(a:context.is_async)
+    let a:context.is_async = 1
+  endif
+  return s:source.async_gather_candidates(a:args, a:context)
+endfunction
+
 function! s:source.async_gather_candidates(args, context)
-  "if !a:context.is_redraw && !empty(s:ramcache)
-  "  return s:ramcache
-  "endif
   let cmd = printf('%s %s', g:unite_source_ruby_require_cmd, s:helper_path)
   call s:P.touch('unite-ruby-require', cmd)
   let [out, err, type] = s:P.read('unite-ruby-require', ['$'])
