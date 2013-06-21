@@ -60,7 +60,7 @@ function! s:source.async_gather_candidates(args, context)
 endfunction
 
 function! s:_format(out)
-  let require_list = split(a:out, "\r?\n")
+  let require_list = split(a:out, "\r\\?\n")
   return map(require_list, '{
         \ "word": printf("require %s", string(v:val)),
         \ "abbr": v:val,
