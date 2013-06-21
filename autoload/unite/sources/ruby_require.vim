@@ -10,7 +10,7 @@ let s:source = {
       \ 'default_action': {'common': 'insert'},
       \ }
 
-let s:V = vital#of('vital') " unite-ruby-require.vim')
+let s:V = vital#of('unite-ruby-require.vim')
 let s:P = s:V.import('ProcessManager')
 let s:F = s:V.import('System.Filepath')
 let s:C = s:V.import('System.Cache')
