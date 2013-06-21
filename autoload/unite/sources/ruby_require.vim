@@ -1,51 +1,80 @@
-scriptencoding utf-8
-
 let s:save_cpo = &cpo
 set cpo&vim
 
-let g:unite_source_ruby_require_ruby_command = get(g:, 'unite_source_ruby_require_ruby_command', 'ruby')
+let g:unite_source_ruby_require_cmd =
+      \ get(g:, 'unite_source_ruby_require_cmd', 'ruby')
+
 let s:source = {
-            \ "name" : "ruby/require",
-            \ "description" : "Ruby library to require",
-            \ "default_action" : {"common" : "require"},
-            \ "action_table" : {},
-            \ }
+      \ 'name': 'ruby/require',
+      \ 'description': 'Ruby library to require',
+      \ 'default_action': {'common': 'insert'},
+      \ }
+
+let s:V = vital#of('unite-ruby-require.vim')
+let s:P = s:V.import('ProcessManager')
+let s:F = s:V.import('System.Filepath')
+let s:C = s:V.import('System.Cache')
+
+let s:helper_path = printf(
+      \ '%s%sruby_helper.rb',
+      \ expand('<sfile>:p:h'),
+      \ s:F.separator())
+let s:ramcache = ['undefined']
 
 function! unite#sources#ruby_require#define()
-    return g:unite_source_ruby_require_ruby_command=='' ? {} : s:source
+  let ok = g:unite_source_ruby_require_cmd !=# '' && s:P.is_available()
+  return ok ? s:source : {}
 endfunction
 
 function! s:source.gather_candidates(args, context)
-    let require_list = split(
-          \ unite#util#system(g:unite_source_ruby_require_ruby_command .
-          \ ' -e '.
-          \ '''begin; require "bundler"; b=[Bundler::bundle_path.to_s]; rescue; b=[]; end;'.
-          \ 'puts $LOAD_PATH.select{|l| l=~/ruby\/\d\.\d\.\d$/ }.map{|l| Dir.glob(l+"/**/*").map{|p| p=~/#{l}\/(.+)\.rb$/; $1}}.flatten!.compact!.sort!'.
-          \ ' + (b+Gem::default_path).map{|p| Dir.glob(p+"/**/*.rb").map{|g| g=~/#{p}\/.+\/lib\/(.+)\.rb$/; $1 }}.flatten!.compact!.sort!.uniq!'.
-          \ '''')
-          \ , "\n")
-
-    if v:shell_error
-        echohl Error
-        for error in require_list
-            echohl error
-        endfor
-        echohl None
-        return []
-    endif
-
-    return map(require_list, "{
-                \ 'word' : v:val,
-                \ 'is_multiline' : 1,
-                \ }")
+  if s:ramcache == ['undefined']
+    let s:ramcache = s:_slurp_cache()
+  endif
+  if a:context.is_async && !empty(s:ramcache)
+    let a:context.is_async = 0
+    return s:ramcache
+  elseif a:context.is_redraw
+    let s:ramcache = []
+    let a:context.is_async = 1
+  endif
+  return s:source.async_gather_candidates(a:args, a:context)
 endfunction
 
-let s:source.action_table.require = {
-            \ 'description' : 'require ruby gems'
-            \ }
+function! s:source.async_gather_candidates(args, context)
+  let cmd = printf('%s %s', g:unite_source_ruby_require_cmd, s:helper_path)
+  call s:P.touch('unite-ruby-require', cmd)
+  let [out, err, type] = s:P.read('unite-ruby-require', ['$'])
+  call unite#util#print_error(err)
+  if type ==# 'timedout'
+    let formatted = s:_format(out)
+    let s:ramcache += formatted
+    return formatted
+  else " matched
+    let a:context.is_async = 0
+    call s:P.stop('unite-ruby-require')
+    let formatted = s:_format(out)
+    let s:ramcache += formatted
+    call s:_spit_cache(s:ramcache)
+    return formatted
+  endif
+endfunction
 
-function! s:source.action_table.require.func(candidate)
-    execute 'put!' '=''require '''''.a:candidate.word.''''''''
+function! s:_format(out)
+  let require_list = split(a:out, "\r\\?\n")
+  return map(require_list, '{
+        \ "word": printf("require %s", string(v:val)),
+        \ "abbr": v:val,
+        \ }')
+endfunction
+
+function! s:_spit_cache(list)
+  let xs = map(copy(a:list), 'string(v:val)')
+  call s:C.writefile(g:unite_data_directory, 'ruby_require', xs)
+endfunction
+
+function! s:_slurp_cache()
+  let list = s:C.readfile(g:unite_data_directory, 'ruby_require')
+  return map(list, 'eval(v:val)')
 endfunction
 
 let &cpo = s:save_cpo
