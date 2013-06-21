@@ -18,7 +18,6 @@ let s:helper_path = printf(
       \ '%s%sruby_helper.rb',
       \ expand('<sfile>:p:h'),
       \ s:F.separator())
-echomsg string(['helper_path', s:helper_path])
 let s:ramcache = []
 
 function! unite#sources#ruby_require#define()
@@ -31,7 +30,6 @@ function! s:source.async_gather_candidates(args, context)
   "  return s:ramcache
   "endif
   let cmd = printf('%s %s', g:unite_source_ruby_require_cmd, s:helper_path)
-  echomsg string(['cmd', cmd])
   call s:P.touch('unite-ruby-require', cmd)
   let [out, err, type] = s:P.read('unite-ruby-require', ['$'])
   call unite#util#print_error(err)
