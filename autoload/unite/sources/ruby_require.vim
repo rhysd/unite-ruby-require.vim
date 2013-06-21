@@ -31,7 +31,6 @@ function! s:source.gather_candidates(args, context)
     return s:ramcache
   elseif a:context.is_redraw
     let s:ramcache = []
-    echomsg string(a:context.is_async)
     let a:context.is_async = 1
   endif
   return s:source.async_gather_candidates(a:args, a:context)
