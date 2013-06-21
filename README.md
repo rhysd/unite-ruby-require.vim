@@ -3,7 +3,7 @@
 This Vim plugin is a [unite.vim](https://github.com/Shougo/unite.vim) source
 for searching paths for `require` in Ruby.
 This plugin searches Ruby standard library paths, gem's default paths, and
-bundler's local paths.
+bundler's local paths. Everything is done asynchronously, and also it caches.
 
 ## Usage
 
