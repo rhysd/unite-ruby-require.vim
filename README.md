@@ -24,7 +24,7 @@ the unite core doc.
 
 ## License
 
-TBD
+GPL-3 or later
 
 ## Setting
 
