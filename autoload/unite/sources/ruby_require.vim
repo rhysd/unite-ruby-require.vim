@@ -49,6 +49,9 @@ function! s:source.async_gather_candidates(args, context)
     let formatted = s:_format(out)
     let s:ramcache += formatted
     return formatted
+  elseif type ==# 'inactive'
+    call s:P.stop('unite-ruby-require')
+    return s:source.async_gather_candidates(a:args, a:context)
   else " matched
     let a:context.is_async = 0
     call s:P.stop('unite-ruby-require')
