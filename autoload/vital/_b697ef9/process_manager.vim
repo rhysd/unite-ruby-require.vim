@@ -48,6 +48,9 @@ function! s:read_wait(i, wait, endpatterns)
   if !has_key(s:_processes, a:i)
     throw printf("ProcessManager doesn't know about %s", a:i)
   endif
+  if s:status(a:i) ==# 'inactive'
+    return ['', '', 'inactive']
+  endif
 
   let p = s:_processes[a:i]
   let out_memo = ''
@@ -76,9 +79,14 @@ function! s:write(i, str)
   if !has_key(s:_processes, a:i)
     throw printf("ProcessManager doesn't know about %s", a:i)
   endif
+  if s:status(a:i) ==# 'inactive'
+    return 'inactive'
+  endif
 
   let p = s:_processes[a:i]
   call p.stdin.write(a:str)
+
+  return 'active'
 endfunction
 
 function! s:writeln(i, str)
@@ -89,15 +97,14 @@ function! s:status(i)
   if !has_key(s:_processes, a:i)
     throw printf("ProcessManager doesn't know about %s", a:i)
   endif
-
   let p = s:_processes[a:i]
-  let stat= p.kill(0)
+  call p.waitpid()
+  " vimproc.kill isn't to stop but to ask for the current state.
+  return p.kill(0) || p.pid == 0 ? 'inactive' : 'active'
+endfunction
 
-  if stat
-    return 'active'
-  endif
-
-  return 'inactive'
+function! s:debug_processes()
+  return s:_processes
 endfunction
 
 let &cpo = s:save_cpo
