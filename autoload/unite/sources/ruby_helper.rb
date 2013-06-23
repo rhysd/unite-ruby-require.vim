@@ -1,7 +1,7 @@
 stdlibs = $LOAD_PATH.grep(/ruby\/\d\.\d\.\d$/).
-  map {|l|
-    r = /^#{l}\/(.+)\.rb$/
-    Dir.glob("#{l}/**/*.rb").map {|p| p[r, 1] }.compact
+  map {|p|
+    r = /^#{p}\/(.+)\.rb$/
+    Dir.glob("#{p}/**/*.rb").map {|p| p[r, 1] }.compact
   }.
   flatten.sort
 puts stdlibs
