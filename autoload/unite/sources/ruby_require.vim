@@ -41,7 +41,7 @@ function! s:source.gather_candidates(args, context)
 endfunction
 
 function! s:source.async_gather_candidates(args, context)
-  let cmd = printf('%s %s', g:unite_source_ruby_require_cmd, s:helper_path)
+  let cmd = [g:unite_source_ruby_require_cmd, s:helper_path]
   call s:P.touch('unite-ruby-require', cmd)
   let [out, err, type] = s:P.read('unite-ruby-require', ['$'])
   call unite#util#print_error(err)
