@@ -5,7 +5,7 @@ stdlibs = $LOAD_PATH.grep(/ruby\/\d\.\d\.\d$/).
   }.
   flatten.sort
 puts stdlibs
-bundler_paths = [(require 'bundler'; Bundler.bundle_path.to_s)] rescue []
+bundler_paths = begin [(require 'bundler'; Bundler.bundle_path.to_s)]; rescue LoadError; [] end
 gemlibs = (bundler_paths + Gem.default_path).
   compact.flatten.uniq.
   map {|p|
