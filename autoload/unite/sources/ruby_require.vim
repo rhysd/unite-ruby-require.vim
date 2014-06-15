@@ -72,11 +72,11 @@ endfunction
 
 function! s:_spit_cache(list)
   let xs = map(copy(a:list), 'string(v:val)')
-  call s:C.writefile(g:unite_data_directory, 'ruby_require', xs)
+  call s:C.writefile(unite#get_data_directory(), 'ruby_require', xs)
 endfunction
 
 function! s:_slurp_cache()
-  let list = s:C.readfile(g:unite_data_directory, 'ruby_require')
+  let list = s:C.readfile(unite#get_data_directory(), 'ruby_require')
   return map(list, 'eval(v:val)')
 endfunction
 
