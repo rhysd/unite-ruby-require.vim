@@ -10,8 +10,8 @@ let s:source = {
       \ 'default_action': {'common': 'insert'},
       \ }
 
-let s:V = vital#of('unite-ruby-require.vim')
-let s:P = s:V.import('ProcessManager')
+let s:V = vital#of('unite_ruby_require')
+let s:CP = s:V.import('ConcurrentProcess')
 let s:F = s:V.import('System.Filepath')
 let s:C = s:V.import('System.Cache')
 
@@ -22,7 +22,7 @@ let s:helper_path = printf(
 let s:ramcache = ['undefined']
 
 function! unite#sources#ruby_require#define()
-  let ok = g:unite_source_ruby_require_cmd !=# '' && s:P.is_available()
+  let ok = g:unite_source_ruby_require_cmd !=# '' && s:CP.is_available()
   return ok ? s:source : {}
 endfunction
 
@@ -42,19 +42,20 @@ endfunction
 
 function! s:source.async_gather_candidates(args, context)
   let cmd = [g:unite_source_ruby_require_cmd, s:helper_path]
-  call s:P.touch('unite-ruby-require', cmd)
-  let [out, err, type] = s:P.read('unite-ruby-require', ['$'])
-  call unite#util#print_error(err)
-  if type ==# 'timedout'
+  let label = s:CP.of(cmd, '', [
+        \ ['*read-all*', 'x']])
+  let [out, err] = s:CP.consume(label, 'x')
+  if err !=# ''
+    call unite#util#print_error(err)
+  endif
+
+  if !s:CP.is_done(label, 'x')
     let formatted = s:_format(out)
     let s:ramcache += formatted
     return formatted
-  elseif type ==# 'inactive'
-    call s:P.stop('unite-ruby-require')
-    return s:source.async_gather_candidates(a:args, a:context)
-  else " matched
+  else
     let a:context.is_async = 0
-    call s:P.stop('unite-ruby-require')
+    call s:CP.shutdown(label)
     let formatted = s:_format(out)
     let s:ramcache += formatted
     call s:_spit_cache(s:ramcache)
